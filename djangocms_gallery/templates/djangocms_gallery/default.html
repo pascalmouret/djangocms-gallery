@@ -1,0 +1,35 @@
+{% load sekizai_tags thumbnail %}
+
+{% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}css/djangocms_gallery/simple.css" />{% endaddtoblock "css" %}
+{% addtoblock "js" %}<script src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script src="{{ STATIC_URL }}js/libs/class.min.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script src="{{ STATIC_URL }}js/cl.carousel.js"></script>{% endaddtoblock "js" %}
+
+{% addtoblock "js" %}<script type="text/javascript">
+    jQuery('document').ready(function(){
+        new Cl.Carousel('#gallery_{{ instance.pk }}',{
+//            'timeout': 1000
+        });
+    })
+</script>{% endaddtoblock "js" %}
+
+<div id="gallery_{{ instance.pk }}" class="clearfix djangocms_gallery">
+    <div class="wrapper" style="max-width: {{ instance.min_width_ratio.0 }}px;">
+        {% if instance.title %}{{ instance.title }}{% endif %}
+        <div class="viewport" style="max-height: {{ instance.min_width_ratio.1 }}px;">
+            {% for slide in instance.slides.all %}
+                {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
+                <article style="height: {{ instance.min_width_ratio.1 }}; width: {{ instance.min_width_ratio.0 }}px;">
+                    {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
+                    <img class="slide" src="{{ slide.image.url }}" alt="{{ slide.image.label}}">
+                    {% if slide.has_link %}</a>{% endif %}
+                </article>
+                {% if slide.has_link %}</a>{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="controls">
+        <span class="trigger-left"><a>< Prev Slide</a></span> | <span class="trigger-right"><a>Next Slide ></a></span>
+        {{ instance.min_width_ratio.0 }}x{{ instance.min_width_ratio.1 }}
+    </div>
+</div>

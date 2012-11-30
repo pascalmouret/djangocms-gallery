@@ -1,4 +1,4 @@
 djangocms-gallery
 =================
 
-Gallery plugin for djang-cms.
+Gallery plugin for django-cms. Still in development.
