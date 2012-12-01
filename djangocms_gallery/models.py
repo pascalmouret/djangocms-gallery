@@ -28,16 +28,11 @@ class Gallery(CMSPlugin):
         self.reload()
 
     def reload(self):
-        self.ratio = self._automatic_ratio()
+        self._automatic_ratios()
         for minmax in ['min', 'max']:
             for atr in ['width', 'height']:
-                setattr(self, '_%s_%s' % (minmax, atr), self._minmax(minmax, atr))
-                setattr(self, '%s_%s' % (minmax, atr), getattr(getattr(self, '_%s_%s' % (minmax, atr)).image, atr))
-        for minmax in ['min', 'max']:
-            for atr in ['width', 'height']:
-                setattr(self, '%s_%s_ratio' % (minmax, atr), self._ratio(atr, getattr(self, '%s_%s' % (minmax, atr))))
-
-        print self.min_width_ratio
+                setattr(self, '%s_%s_ratio' % (minmax, atr),
+                        self._ratio(atr, getattr(self._minmax(minmax, atr).image, atr)))
 
     def copy_relations(self, old_instance):
         for slide in old_instance.slides.all():
@@ -46,7 +41,6 @@ class Gallery(CMSPlugin):
             slide.save()
 
     def _ratio(self, dimension, value):
-        print '%s %s' % (self.wide_ratio, self.high_ratio)
         ratio = self.high_ratio
         if dimension == 'height':
             ratio = self.wide_ratio
@@ -55,37 +49,34 @@ class Gallery(CMSPlugin):
             return value, new_size
         return new_size, value
 
-    def _automatic_ratio(self):
-        if self.slides.all().count == 0:
-            wide = high = 0
-        elif self.slides.all().count == 1:
-            wide = high = float(self.slides.all()[0].image.width)/float(self.slides.all()[0].image.height)
-        else:
-            wide = float(self.slides.all()[0].image.width)/float(self.slides.all()[0].image.height)
-            high = float(self.slides.all()[0].image.height)/float(self.slides.all()[0].image.width)
-            print(wide, high)
-            for slide in self.slides.all():
+    def _automatic_ratios(self):
+        if self.slides.all().count() >= 1:
+            first = self.slides.all()[0]
+            wide = float(first.image.width)/float(first.image.height)
+            high = float(first.image.height)/float(first.image.width)
+            for slide in self.slides.all()[1:]:
                 slide_wide = float(slide.image.width)/float(slide.image.height)
                 slide_high = float(slide.image.height)/float(slide.image.width)
                 if slide_wide > wide:
                     wide = slide_wide
                 if slide_high > high:
                     high = slide_high
+        else:
+            wide = high = 0
         self.wide_ratio = wide
         self.high_ratio = high
 
     def _minmax(self, minmax, atr):
-        slides = self.slides.all()
-        if slides.count == 0:
-            return 0
-        ret = slides[0]
-        if slides.count > 1:
-            for slide in slides:
+        if self.slides.all().count() >= 1:
+            ret = self.slides.all()[0]
+            for slide in self.slides.all()[1:]:
                 res = getattr(ret.image, atr) - getattr(slide.image, atr)
                 if minmax == 'max' and res < 0:
                     ret = slide
                 if minmax == 'min' and res > 0:
                     ret = slide
+        else:
+            return 0
         return ret
 
 
