@@ -14,14 +14,14 @@
 </script>{% endaddtoblock "js" %}
 
 <div id="gallery_{{ instance.pk }}" class="clearfix djangocms_gallery">
-    <div class="wrapper" style="max-width: {{ instance.min_width_ratio.0 }}px;">
-        {% if instance.title %}{{ instance.title }}{% endif %}
-        <div class="viewport" style="max-height: {{ instance.min_width_ratio.1 }}px;">
+    {% if instance.title %}<h2>{{ instance.title }}</h2>{% endif %}
+    <div class="wrapper" style="width: {{ instance.size.0 }}px;">
+        <div class="viewport" style="height: {{ instance.size.1 }}px;">
             {% for slide in instance.slides.all %}
                 {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
-                <article style="height: {{ instance.min_width_ratio.1 }}; width: {{ instance.min_width_ratio.0 }}px;">
+                <article style="height: {{ instance.size.1 }}; width: {{ instance.size.0 }}px;">
                     {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
-                    <img class="slide" src="{{ slide.image.url }}" alt="{{ slide.image.label}}">
+                    <img class="slide" src="{% thumbnail slide.image instance.thumb crop upscale %}" alt="{{ slide.image.label}}">
                     {% if slide.has_link %}</a>{% endif %}
                 </article>
                 {% if slide.has_link %}</a>{% endif %}

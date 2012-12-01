@@ -17,11 +17,13 @@ class Gallery(CMSPlugin):
         choices=settings.GALLERY_TEMPLATES)
     autoplay = models.BooleanField(_('autoplay'), default=True)
 
+    width = models.PositiveIntegerField(_('width'), blank=True, null=True)
+    height = models.PositiveIntegerField(_('height'), blank=True, null=True)
+
     def __unicode__(self):
         if self.title:
             return self.title
-        else:
-            return super(Gallery, self).__unicode__()
+        return super(Gallery, self).__unicode__()
 
     def __init__(self, *args, **kwargs):
         super(Gallery, self).__init__(*args, **kwargs)
@@ -33,13 +35,33 @@ class Gallery(CMSPlugin):
             slide.gallery = self.pk
             slide.save()
 
+    def save(self, *args, **kwargs):
+        super(Gallery, self).save(*args, **kwargs)
+        self.reload()
+
     def reload(self):
         if self.slides.all().count() > 0:
             self._automatic_ratios()
             for minmax in ['min', 'max']:
                 for atr in ['width', 'height']:
-                    setattr(self, '%s_%s_ratio' % (minmax, atr),
-                            self._ratio(atr, getattr(self._minmax(minmax, atr).image, atr)))
+                    current = '%s_%s' % (minmax, atr)
+                    setattr(self, current, getattr(self._minmax(minmax, atr).image, atr))
+                    setattr(self, '%s_ratio' % current, self._ratio(atr, getattr(self, current)))
+            if self.width and self.height:
+                size = (self.width, self.height)
+                thumb = (self.width, self.height)
+            elif self.width:
+                size = self._ratio('width', self.width)
+                thumb = (self.width, 0)
+            elif self.height:
+                size = self._ratio('height', self.height)
+                thumb = (0, self.height)
+            else:
+                default = settings.DEFAULT_RATIO.lower()
+                size = self._ratio(default.split('_')[1], getattr(self, default))
+                thumb = (0,0)
+            self.size = size
+            self.thumb = thumb
 
     def _ratio(self, dimension, value):
         ratio = self.high_ratio
