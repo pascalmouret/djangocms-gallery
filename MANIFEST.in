@@ -1,0 +1,4 @@
+include README.md
+recursive-include djangocms_gallery/static *
+recursive-include djangocms_gallery/templates *
+recursive-exclude * *.pyc

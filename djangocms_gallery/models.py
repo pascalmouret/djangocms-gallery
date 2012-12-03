@@ -48,8 +48,7 @@ class Gallery(CMSPlugin):
                     setattr(self, current, getattr(self._minmax(minmax, atr).image, atr))
                     setattr(self, '%s_ratio' % current, self._ratio(atr, getattr(self, current)))
             if self.width and self.height:
-                size = (self.width, self.height)
-                thumb = (self.width, self.height)
+                size = thumb = (self.width, self.height)
             elif self.width:
                 size = self._ratio('width', self.width)
                 thumb = (self.width, 0)
