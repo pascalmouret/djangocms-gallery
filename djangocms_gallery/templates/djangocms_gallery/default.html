@@ -1,34 +1,41 @@
-{% load sekizai_tags %}
+{% load sekizai_tags i18n %}
 
 {% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}css/djangocms_gallery/simple.css" />{% endaddtoblock "css" %}
 {% addtoblock "js" %}<script src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>{% endaddtoblock "js" %}
 {% addtoblock "js" %}<script src="{{ STATIC_URL }}js/libs/class.min.js"></script>{% endaddtoblock "js" %}
-{% addtoblock "js" %}<script src="{{ STATIC_URL }}js/cl.carousel.js"></script>{% endaddtoblock "js" %}
+{% addtoblock "js" %}<script src="{{ STATIC_URL }}js/cl.gallery.js"></script>{% endaddtoblock "js" %}
 
 {% addtoblock "js" %}<script type="text/javascript">
     jQuery('document').ready(function(){
-        new Cl.Carousel('#gallery_{{ instance.pk }}',{
-        {% if instance.autoplay %}'timeout': {{ instance.autoplay }}{% endif %}
+        new Cl.Gallery('#gallery_{{ instance.pk }}',{
+        'timeout': {{ instance.autoplay }}*1000,
+        'duration': {{ instance.duration }}*1000,
         });
     })
 </script>{% endaddtoblock "js" %}
 
 <div id="gallery_{{ instance.pk }}" class="clearfix djangocms_gallery">
     {% if instance.title %}<h2>{{ instance.title }}</h2>{% endif %}
-    <div class="wrapper" style="width: {{ instance.size.0 }}px;">
-        <div class="viewport" style="height: {{ instance.size.1 }}px;">
+    <div class="wrapper">
+        <div class="viewport">
             {% for slide in instance.slides.all %}
+            {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
+            <article>
                 {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
-                <article style="height: {{ instance.size.1 }}; width: {{ instance.size.0 }}px;">
-                    {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
-                    <img class="slide" src="{{ slide.image.url }}" alt="{{ slide.image.label}}">
-                    {% if slide.has_link %}</a>{% endif %}
-                </article>
+                <img class="slide" src="{{ slide.image.url }}" alt="{{ slide.image.label}}">
                 {% if slide.has_link %}</a>{% endif %}
+            </article>
+            {% if slide.has_link %}</a>{% endif %}
             {% endfor %}
         </div>
     </div>
+    <nav>
+        {% for slide in instance.slides.all %}
+        <span><a>{{ slide.get_title }}</a></span>
+        {% endfor %}
+    </nav>
     <div class="controls">
-        <span class="trigger-left"><a>< Prev Slide</a></span> | <span class="trigger-right"><a>Next Slide ></a></span>
+        <span class="trigger-left"><a>{% trans 'Prev Slide' %}</a></span>
+        <span class="trigger-right"><a>{% trans 'Next Slide' %}</a></span>
     </div>
 </div>

@@ -21,3 +21,7 @@ A Tuple of Tuples containing the available Templates:
 
 ### ADVANCED_OPTIONS
 Default is False. If True, additional options will be available in the admin.
+
+## People
+This plugin uses cl.gallery.js out of the classjs-plugins-library:
+* https://github.com/FinalAngel/classjs-plugins

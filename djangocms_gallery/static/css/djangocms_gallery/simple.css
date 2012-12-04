@@ -1,4 +1,4 @@
 .djangocms_gallery .disabled { color: #d3d3d3; }
 .djangocms_gallery .viewport { position: absolute; }
 .djangocms_gallery .wrapper { position: relative; overflow: hidden; }
-.djangocms_gallery article { display: block; float: left; }
+.djangocms_gallery article { display: block; }
