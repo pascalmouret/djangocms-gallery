@@ -15,7 +15,7 @@ class GalleryPlugin(CMSPluginBase):
 
     inlines = [SlideAdmin,]
     fields = ('title', 'template', 'autoplay',)
-    advanced_fields = ('duration',)
+    advanced_fields = ('duration', 'navigation_style',)
 
     @property
     def declared_fieldsets(self):

@@ -1,0 +1,5 @@
+<nav>
+    {% for slide in instance.slides.all %}
+    <span><a>{{ slide.get_title }}</a></span>
+    {% endfor %}
+</nav>

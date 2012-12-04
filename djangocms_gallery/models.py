@@ -21,6 +21,8 @@ class Gallery(CMSPlugin):
     # Advanced
     duration = models.PositiveIntegerField(_('duration'), default=0, blank=True,
         help_text=_('Duration of the animation in seconds. Zero means no animation.'))
+    navigation_style = models.CharField(_('navigation style'), max_length=255, choices=settings.NAVIGATION_OPTIONS,
+        default=settings.NAVIGATION_OPTIONS[0][0])
 
     def __unicode__(self):
         if self.title:

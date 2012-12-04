@@ -29,11 +29,11 @@
             {% endfor %}
         </div>
     </div>
-    <nav>
-        {% for slide in instance.slides.all %}
-        <span><a>{{ slide.get_title }}</a></span>
-        {% endfor %}
-    </nav>
+    {% if instance.navigation_style != 'NONE' %}
+        {% if instance.navigation_style == 'TITLE' %}
+            {% include 'djangocms_gallery/nav/title.html' %}
+        {% endif %}
+    {% endif %}
     <div class="controls">
         <span class="trigger-left"><a>{% trans 'Prev Slide' %}</a></span>
         <span class="trigger-right"><a>{% trans 'Next Slide' %}</a></span>
