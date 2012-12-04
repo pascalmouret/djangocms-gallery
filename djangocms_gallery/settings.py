@@ -7,7 +7,7 @@ DEFAULT_GALLERY_TEMPLATES = (
     ('djangocms_gallery/default.html', _('default')),
 )
 
-DEFAULT_ADVANCED_OPTIONS = True
+DEFAULT_ADVANCED_OPTIONS = False
 
 # 'MIN_WIDTH', 'MIN_HEIGHT', 'MAX_WIDTH', 'MAX_HEIGHT'
 DEFAULT_DEFAULT_RATIO = 'MIN_WIDTH'
