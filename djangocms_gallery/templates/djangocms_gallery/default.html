@@ -1,4 +1,4 @@
-{% load sekizai_tags thumbnail %}
+{% load sekizai_tags %}
 
 {% addtoblock "css" %}<link rel="stylesheet" href="{{ STATIC_URL }}css/djangocms_gallery/simple.css" />{% endaddtoblock "css" %}
 {% addtoblock "js" %}<script src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>{% endaddtoblock "js" %}
@@ -8,7 +8,7 @@
 {% addtoblock "js" %}<script type="text/javascript">
     jQuery('document').ready(function(){
         new Cl.Carousel('#gallery_{{ instance.pk }}',{
-//            'timeout': 1000
+        {% if instance.autoplay %}'timeout': {{ instance.autoplay }}{% endif %}
         });
     })
 </script>{% endaddtoblock "js" %}
@@ -21,7 +21,7 @@
                 {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
                 <article style="height: {{ instance.size.1 }}; width: {{ instance.size.0 }}px;">
                     {% if slide.has_link %}<a href="{{ slide.link }}">{% endif %}
-                    <img class="slide" src="{% thumbnail slide.image instance.thumb crop upscale %}" alt="{{ slide.image.label}}">
+                    <img class="slide" src="{{ slide.image.url }}" alt="{{ slide.image.label}}">
                     {% if slide.has_link %}</a>{% endif %}
                 </article>
                 {% if slide.has_link %}</a>{% endif %}

@@ -14,8 +14,8 @@ class GalleryPlugin(CMSPluginBase):
     render_template = 'djangocms_gallery/gallery_base.html'
 
     inlines = [SlideAdmin,]
-    fields = ('title', 'template', 'autoplay')
-    advanced_fields = (('width', 'height'),)
+    fields = ('title', 'template', 'autoplay',)
+    advanced_fields = ('duration',)
 
     @property
     def declared_fieldsets(self):

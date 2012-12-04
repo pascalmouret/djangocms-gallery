@@ -13,9 +13,8 @@ class Migration(SchemaMigration):
             ('cmsplugin_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['cms.CMSPlugin'], unique=True, primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('template', self.gf('django.db.models.fields.CharField')(default='djangocms_gallery/default.html', max_length=255)),
-            ('autoplay', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('width', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('height', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+            ('autoplay', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
+            ('duration', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
         ))
         db.send_create_signal('djangocms_gallery', ['Gallery'])
 
@@ -25,6 +24,7 @@ class Migration(SchemaMigration):
             ('gallery', self.gf('django.db.models.fields.related.ForeignKey')(related_name='slides', to=orm['djangocms_gallery.Gallery'])),
             ('ordering', self.gf('django.db.models.fields.IntegerField')(default=100)),
             ('image', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['filer.Image'])),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('page', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['cms.Page'], null=True, blank=True)),
             ('url', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
         ))
@@ -72,7 +72,7 @@ class Migration(SchemaMigration):
         'cms.cmsplugin': {
             'Meta': {'object_name': 'CMSPlugin'},
             'changed_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 12, 1, 0, 0)'}),
+            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 12, 4, 0, 0)'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'max_length': '15', 'db_index': 'True'}),
             'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
@@ -128,12 +128,11 @@ class Migration(SchemaMigration):
         },
         'djangocms_gallery.gallery': {
             'Meta': {'object_name': 'Gallery', 'db_table': "'cmsplugin_gallery'", '_ormbases': ['cms.CMSPlugin']},
-            'autoplay': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'autoplay': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
-            'height': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'duration': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'template': ('django.db.models.fields.CharField', [], {'default': "'djangocms_gallery/default.html'", 'max_length': '255'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'width': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'})
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'})
         },
         'djangocms_gallery.slide': {
             'Meta': {'ordering': "['ordering', 'pk']", 'object_name': 'Slide'},
@@ -142,6 +141,7 @@ class Migration(SchemaMigration):
             'image': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['filer.Image']"}),
             'ordering': ('django.db.models.fields.IntegerField', [], {'default': '100'}),
             'page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['cms.Page']", 'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         },
         'filer.file': {

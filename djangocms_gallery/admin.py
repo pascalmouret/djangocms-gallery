@@ -7,4 +7,4 @@ from djangocms_gallery.models import Slide
 
 class SlideAdmin(admin.StackedInline):
     model = Slide
-    fields = ('ordering', 'image', ('page', 'url',),)
+    fields = (('title', 'ordering',), 'image', ('page', 'url',),)

@@ -15,10 +15,12 @@ class Gallery(CMSPlugin):
     title = models.CharField(_('title'), max_length=100, blank=True, null=True)
     template = models.CharField(_('template'), max_length=255, default=settings.GALLERY_TEMPLATES[0][0],
         choices=settings.GALLERY_TEMPLATES)
-    autoplay = models.BooleanField(_('autoplay'), default=True)
+    autoplay = models.PositiveIntegerField(_('autoplay'), default=0, blank=True,
+        help_text=_('Time in seconds each slide is displayed. Zero means no autoplay.'))
 
-    width = models.PositiveIntegerField(_('width'), blank=True, null=True)
-    height = models.PositiveIntegerField(_('height'), blank=True, null=True)
+    # Advanced
+    duration = models.PositiveIntegerField(_('duration'), default=0, blank=True,
+        help_text=_('Duration of the animation in seconds. Zero means no animation.'))
 
     def __unicode__(self):
         if self.title:
@@ -47,20 +49,8 @@ class Gallery(CMSPlugin):
                     current = '%s_%s' % (minmax, atr)
                     setattr(self, current, getattr(self._minmax(minmax, atr).image, atr))
                     setattr(self, '%s_ratio' % current, self._ratio(atr, getattr(self, current)))
-            if self.width and self.height:
-                size = thumb = (self.width, self.height)
-            elif self.width:
-                size = self._ratio('width', self.width)
-                thumb = (self.width, 0)
-            elif self.height:
-                size = self._ratio('height', self.height)
-                thumb = (0, self.height)
-            else:
-                default = settings.DEFAULT_RATIO.lower()
-                size = self._ratio(default.split('_')[1], getattr(self, default))
-                thumb = (0,0)
-            self.size = size
-            self.thumb = thumb
+            default = settings.DEFAULT_RATIO.lower()
+            self.size = self._ratio(default.split('_')[1], getattr(self, default))
 
     def _ratio(self, dimension, value):
         ratio = self.high_ratio
@@ -101,6 +91,7 @@ class Slide(models.Model):
     ordering = models.IntegerField(_('ordering'), default=100)
     image = FilerImageField(verbose_name=_('image'))
 
+    title = models.CharField(_('title'), max_length=100, blank=True, null=True)
     page = PageField(verbose_name=_('page'), blank=True, null=True)
     url = models.URLField(_('url'), blank=True, null=True)
 
@@ -108,6 +99,12 @@ class Slide(models.Model):
         ordering = ['ordering', 'pk',]
 
     def __unicode__(self):
+        return self.get_title
+
+    @property
+    def get_title(self):
+        if self.title:
+            return self.title
         return self.image.label
 
     @property
